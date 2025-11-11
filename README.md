@@ -26,3 +26,16 @@ A lightweight Python API for converting Markdown files (`.md`) to PDF. Built wit
 - [Pandoc](https://pandoc.org/installing.html)
 - LaTeX (for PDF conversion)
 - FastAPI dependencies (listed in `requirements.txt`)
+
+### Docker Image
+
+To simplify deployment and avoid managing dependencies manually, this project provides a Docker image.
+
+```bash
+docker build -t md-to-pdf-app .
+
+docker run -d -p 8000:8000 --name md-to-pdf md-to-pdf-app
+```
+
+- Access the API at: http://localhost:8000
+- Interactive docs available at: http://localhost:8000/docs
