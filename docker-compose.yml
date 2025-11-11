@@ -2,7 +2,9 @@ version: "3.9"
 
 services:
   md-to-pdf:
-    build: .
+    build: 
+      context: .
+      dockerfile: docker/dockerfile
     container_name: md-to-pdf-app
     ports:
       - "8000:8000"
