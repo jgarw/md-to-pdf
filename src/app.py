@@ -1,14 +1,27 @@
-from fastapi import FastAPI, UploadFile, Form
+from fastapi import FastAPI, UploadFile, Request
 from fastapi.responses import FileResponse
-from converter import convert_md_to_pdf
-from qr_generator import generate_qr_code
+from fastapi.staticfiles import StaticFiles
+from .converter import convert_md_to_pdf
+from .qr_generator import generate_qr_code
 import os, uuid
 
 app = FastAPI()
 
+# adjust path to be relative to where docker runs from
+static_path = os.path.join(os.path.dirname(__file__), "..", "static")
+os.makedirs(static_path, exist_ok=True)
+
+# mount static files
+app.mount("/static", StaticFiles(directory=static_path), name="static")
+
+# serve index.html at root
+@app.get("/")
+async def read_root():
+    return FileResponse(os.path.join(static_path, "index.html"))
+
 # function to convert md to pdf 
 @app.post("/convert/")
-async def convert(file: UploadFile):
+async def convert(request: Request, file: UploadFile):
     
     # create directories 
     os.makedirs("uploads", exist_ok=True)
@@ -28,7 +41,9 @@ async def convert(file: UploadFile):
     # convert md to pdf, storing pdf in output_path
     convert_md_to_pdf(input_path, output_path)
 
-    generate_qr_code(file_id)
+    # get base url of service
+    base_url = f"{request.url.scheme}://{request.headers.get('host', request.client.host)}"
+    generate_qr_code(file_id, base_url)
 
     # return generated pdf
     return FileResponse(
