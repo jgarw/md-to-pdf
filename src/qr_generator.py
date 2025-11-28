@@ -1,5 +1,5 @@
 import qrcode
-from .mail import send_qr_email
+# from .mail import send_qr_email
 
 # function to generate a qr code image from a file donwload url
 def generate_qr_code(file_id: str, base_url: str):
@@ -14,4 +14,6 @@ def generate_qr_code(file_id: str, base_url: str):
     # save qr code image
     img.save(qr_path)
 
-    send_qr_email(file_id, qr_path, download_url)
+    return qr_path
+
+    # send_qr_email(file_id, qr_path, download_url)

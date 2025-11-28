@@ -1,8 +1,9 @@
-from fastapi import FastAPI, UploadFile, Request
+from fastapi import FastAPI, UploadFile, Request, Form
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from .converter import convert_md_to_pdf
 from .qr_generator import generate_qr_code
+from .mail import send_qr_email
 import os, uuid
 
 app = FastAPI()
@@ -21,7 +22,7 @@ async def read_root():
 
 # function to convert md to pdf 
 @app.post("/convert/")
-async def convert(request: Request, file: UploadFile):
+async def convert(request: Request, file: UploadFile, email: str = Form(None)):
     
     # create directories 
     os.makedirs("uploads", exist_ok=True)
@@ -41,9 +42,12 @@ async def convert(request: Request, file: UploadFile):
     # convert md to pdf, storing pdf in output_path
     convert_md_to_pdf(input_path, output_path)
 
-    # get base url of service
-    base_url = f"{request.url.scheme}://{request.headers.get('host', request.client.host)}"
-    generate_qr_code(file_id, base_url)
+    if email:
+        # get base url of service
+        base_url = f"{request.url.scheme}://{request.headers.get('host', request.client.host)}"
+        download_url = f"{base_url}/download/{file_id}"
+        qr_path = generate_qr_code(file_id, base_url)
+        send_qr_email(file_id, qr_path, download_url, email)
 
     # return generated pdf
     return FileResponse(
