@@ -79,8 +79,6 @@ kubectl get pods
 kubectl port-forward service/md-to-pdf-service 8080:8080
 ```
 
-See [k8s/README.md](k8s/README.md) for detailed instructions.
-
 ## Configuration
 
 Required environment variables in `.env`:
