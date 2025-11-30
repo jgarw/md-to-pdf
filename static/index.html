@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown to PDF Converter</title>
+    <link rel="stylesheet" type="text/css" href="/static/styles.css" />
+    <!-- <script href="script.js"></script> -->
+</head>
+<body>
+    <h1>Markdown to PDF Converter</h1>
+    
+    <form action="/convert/" method="post" enctype="multipart/form-data">
+        <label for="file">Select a Markdown file:</label><br>
+        <input type="file" id="file" name="file" accept=".md" required><br><br>
+
+        <label for="qr-toggle">Send QR code via email?</label>
+        <label class="switch">
+            <input type="checkbox" id="qr-toggle">
+            <span class="slider"></span>
+        </label>
+        <br><br>
+        <div id="email-container">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email"><br><br>
+        </div>
+
+        <button type="submit">Convert to PDF</button>
+    </form>
+
+    <script>
+        const toggle = document.getElementById('qr-toggle');
+        const emailContainer = document.getElementById('email-container');
+
+        toggle.addEventListener('change', function() {
+            if (this.checked) {
+                emailContainer.style.display = 'block';
+                document.getElementById('email').required = true;
+            } else {
+                emailContainer.style.display = 'none';
+                document.getElementById('email').required = false;
+            }
+        });
+    </script>
+</body>
+</html>
